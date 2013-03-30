@@ -6,7 +6,6 @@ var http = require('http');
  */
 function getForumPage(callback) {
 	http.get("http://forum.academ.org/index.php?showforum=573", function (res) {
-		console.log("Got response: " + res.statusCode);
 		if (res.statusCode != 200) {
 			callback({no_page: true});
 			return;
@@ -27,8 +26,25 @@ function getForumPage(callback) {
 }
 
 getForumPage(function(err, text){
-	console.log('err:');
-	console.log(err);
-	console.log('text:');
-	console.log(text.slice(0, 300) + '... and so on');
+	if (err || !text) {
+		console.log('err:');
+		console.log(err);
+		return;
+	}
+	console.log(extractForumPageTopicsAsTexts(text));
 });
+
+/**
+ * Parse forum page as topics.
+ * @param {String} text
+ * @return {Array.<String>}
+ */
+function extractForumPageTopicsAsTexts(text) {
+	var re = /<!-- Begin Topic Entry (\d+) -->([\s\S]*?)<!-- End Topic Entry \1 -->/g;
+	var match;
+	var matches = [];
+	while (match = re.exec(text)) {
+		matches.push([match[1], match[2]])
+	}
+	return matches;
+}
