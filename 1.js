@@ -2,7 +2,7 @@ var http = require('http');
 
 /**
  * Get forum page content.
- * @param {function(err: Object, text?: String)} callback
+ * @param {function(Object, String?)} callback
  */
 function getForumPage(callback) {
 	http.get("http://forum.academ.org/index.php?showforum=573", function (res) {
